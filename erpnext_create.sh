@@ -1,18 +1,8 @@
 #!/bin/bash
 
-echo "starting frappe-erpnext docker stack..."
-docker-compose -f compose.yaml \
- -f overrides/compose.mariadb.yaml \
- -f overrides/compose.redis.yaml \
- -f overrides/compose.proxy.yaml \
- -f overrides/compose.erpnext.yaml \
- up -d
-
-echo "showing logs ... press CRTL+C to exit."
-docker-compose -f compose.yaml \
- -f overrides/compose.mariadb.yaml \
- -f overrides/compose.redis.yaml \
- -f overrides/compose.proxy.yaml \
- -f overrides/compose.erpnext.yaml \
- logs -f
+source .env
+export FRAPPE_SITE_ADMIN_PASSWORD="n31d5.fr"
+echo "creating frappe-erpnext site FRAPPE_SITE_NAME_HEADER=${FRAPPE_SITE_NAME_HEADER} ..."
+docker-compose exec backend bench new-site "${FRAPPE_SITE_NAME_HEADER}" --install-app erpnext \
+ --admin-password "${FRAPPE_SITE_ADMIN_PASSWORD}" --mariadb-root-password "${DB_PASSWORD}"
 
